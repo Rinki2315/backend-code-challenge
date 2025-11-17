@@ -22,12 +22,12 @@ public class MessageLogic : IMessageLogic
         if (string.IsNullOrWhiteSpace(request.Content) || request.Content.Length < 10 || request.Content.Length > 1000)
             errors["Content"] = new[] { "Content must be between 10 and 1000 characters." };
 
+        if (errors.Count > 0)
+            return new ValidationError(errors);
+
         var existing = await _repository.GetByTitleAsync(organizationId, request.Title);
         if (existing != null)
             return new Conflict("A message with the same title already exists.");
-
-        if (errors.Count > 0)
-            return new ValidationError(errors);
 
         var message = new Message
         {
@@ -58,12 +58,12 @@ public class MessageLogic : IMessageLogic
         if (string.IsNullOrWhiteSpace(request.Content) || request.Content.Length < 10 || request.Content.Length > 1000)
             errors["Content"] = new[] { "Content must be between 10 and 1000 characters." };
 
+        if (errors.Count > 0)
+            return new ValidationError(errors);
+
         var existing = await _repository.GetByTitleAsync(organizationId, request.Title);
         if (existing != null && existing.Id != id)
             return new Conflict("A message with the same title already exists.");
-
-        if (errors.Count > 0)
-            return new ValidationError(errors);
 
         message.Title = request.Title;
         message.Content = request.Content;
